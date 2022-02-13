@@ -6,10 +6,15 @@
 
 #include "Mesh.h"
 
+
 void xe::Mesh::draw() const {
     glBindVertexArray(vao_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_buffer_);
     for (auto i = 0; i < submeshes_.size(); i++) {
+      if(materialas_[i] != nullptr) {
+        materialas_[i]->bind();
+        materialas_[i]->unbind();
+      }
         glDrawElements(GL_TRIANGLES, submeshes_[i].count(), GL_UNSIGNED_SHORT,
                        reinterpret_cast<void *>(sizeof(GLushort) * submeshes_[i].start));
     }
@@ -57,9 +62,28 @@ void xe::Mesh::allocate_vertex_buffer(size_t size, GLenum hint) {
     glBindBuffer(GL_ARRAY_BUFFER, 0u);
 }
 
-void xe::Mesh::
-load_vertices(size_t offset, size_t size, void *data) {
+void xe::Mesh::load_vertices(size_t offset, size_t size, void *data) {
     glBindBuffer(GL_ARRAY_BUFFER, v_buffer_);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
     glBindBuffer(GL_ARRAY_BUFFER, 0u);
+}
+
+void *xe::Mesh::map_vertex_buffer() {
+    glBindBuffer(GL_ARRAY_BUFFER, v_buffer_);
+    return glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+}
+
+void xe::Mesh::unmap_vertex_buffer() {
+    glBindBuffer(GL_ARRAY_BUFFER, v_buffer_);
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void *xe::Mesh::map_index_buffer() {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_buffer_);
+    return glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+}
+
+void xe::Mesh::unmap_index_buffer() {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_buffer_);
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }

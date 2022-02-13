@@ -6,7 +6,7 @@
 
 #include <vector>
 #include "glad/gl.h"
-
+#include "Material.h"
 
 namespace xe {
 
@@ -33,11 +33,24 @@ namespace xe {
 
         void vertex_attrib_pointer(GLuint index, GLuint size, GLenum type, GLsizei stride, GLsizei offset);
 
-        void add_submesh(GLuint start, GLuint end) {
-            submeshes_.push_back({start, end});
+        void add_submesh(GLuint start, GLuint end, Material* mat){
+          submeshes_.push_back({start, end});
+          materialas_.push_back(mat);
+        }
+
+        void add_submesh(GLuint start, GLuint end){
+          add_submesh(start, end, nullptr);
         }
 
         void draw() const;
+
+        void *map_vertex_buffer();
+        
+        void unmap_vertex_buffer();
+        
+        void *map_index_buffer();
+        
+        void unmap_index_buffer();
 
     private:
 
@@ -46,7 +59,7 @@ namespace xe {
         GLuint i_buffer_;
 
         std::vector<SubMesh> submeshes_;
-
+        std::vector<Material*> materialas_;
     };
 
 }

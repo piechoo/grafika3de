@@ -11,12 +11,7 @@
 
 namespace xe {
 
-    class Material {
-    public:
-        virtual void bind() = 0;
-
-        virtual void unbind() {};
-    };  
+    GLuint create_texture(const std::string &name);   
 }
 
 
